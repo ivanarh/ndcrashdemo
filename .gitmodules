@@ -1,0 +1,3 @@
+[submodule "jndcrash"]
+	path = jndcrash
+	url = git@bitbucket.org:ivanarh/jndcrash.git

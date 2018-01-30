@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ndcrashdemo</string>
+    <string name="ndk_crash">NDK crash</string>
+    <string name="java_crash">Java crash</string>
+    <string name="clear_report">Clear report</string>
+    <string name="last_ndk_crash_report">Last NDK crash report:</string>
+    <string name="no_crash">No Crash</string>
+</resources>
