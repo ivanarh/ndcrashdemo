@@ -5,4 +5,5 @@
     <string name="clear_report">Clear report</string>
     <string name="last_ndk_crash_report">Last NDK crash report:</string>
     <string name="no_crash">No Crash</string>
+    <string name="backend_for_next_launch">Backend for next launch:</string>
 </resources>

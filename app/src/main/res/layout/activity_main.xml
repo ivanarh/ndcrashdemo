@@ -4,35 +4,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/ndkcrash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ndk_crash"/>
+
         <Button
             android:id="@+id/javacrash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/java_crash"/>
+
         <Button
             android:id="@+id/clearndkcrash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/clear_report"/>
     </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/backend_for_next_launch"/>
+
+        <Spinner
+            android:id="@+id/backend_for_next_launch_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <TextView
             android:id="@+id/lastCrashContents"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="top"
-            android:text="@string/no_crash" />
+            android:text="@string/no_crash"/>
     </ScrollView>
 </LinearLayout>
