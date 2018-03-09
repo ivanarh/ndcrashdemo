@@ -1,21 +1,35 @@
 package ru.ivanarh.ndcrashdemo;
 
 import android.app.Application;
-import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 
 import ru.ivanarh.jndcrash.NDCrash;
+import ru.ivanarh.jndcrash.NDCrashService;
 
 
 public class MainApplication extends Application {
 
     public static final String SHARED_PREFS_NAME = "jndcrash";
     public static final String BACKEND_FOR_NEXT_LAUNCH_KEY = "backend_for_next_launch";
+    public static final String OUT_OF_PROCESS_KEY = "out_of_process";
     public static String mNativeCrashPath;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mNativeCrashPath = getFilesDir().getAbsolutePath() + "/crash.txt";
-        NDCrash.initialize(mNativeCrashPath, getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE).getInt(BACKEND_FOR_NEXT_LAUNCH_KEY, 0));
+        final SharedPreferences prefs = getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE);
+        final int backend = prefs.getInt(BACKEND_FOR_NEXT_LAUNCH_KEY, 0);
+        final boolean outOfProcess = prefs.getBoolean(OUT_OF_PROCESS_KEY, false);
+        NDCrash.initialize(mNativeCrashPath, backend, outOfProcess);
+
+        if (outOfProcess) {
+            //Starting the crash report catching service (in another process)
+            final Intent serviceIntent = new Intent(this, NDCrashService.class);
+            serviceIntent.putExtra(NDCrashService.EXTRA_REPORT_FILE, mNativeCrashPath);
+            serviceIntent.putExtra(NDCrashService.EXTRA_BACKEND, backend);
+            startService(serviceIntent);
+        }
     }
 }

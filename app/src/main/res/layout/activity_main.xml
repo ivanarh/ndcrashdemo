@@ -50,6 +50,12 @@
 
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/out_of_process_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/out_of_process"/>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">

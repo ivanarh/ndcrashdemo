@@ -6,4 +6,5 @@
     <string name="last_ndk_crash_report">Last NDK crash report:</string>
     <string name="no_crash">No Crash</string>
     <string name="backend_for_next_launch">Backend for next launch:</string>
+    <string name="out_of_process">Out of process</string>
 </resources>

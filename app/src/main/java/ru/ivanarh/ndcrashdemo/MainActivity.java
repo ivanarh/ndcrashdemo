@@ -1,15 +1,15 @@
 package ru.ivanarh.ndcrashdemo;
 
 import android.app.Activity;
-import android.database.DataSetObserver;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
@@ -23,6 +23,9 @@ public class MainActivity extends Activity {
 
     private TextView mNativeCrashTextField;
     private String mNativeCrashTextFieldDefaultValue = "";
+
+    Spinner mBackendForNextLaunch;
+    CheckBox mOutOfProcess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,22 +57,32 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Spinner backendForNextLaunch = findViewById(R.id.backend_for_next_launch_spinner);
+        mBackendForNextLaunch = findViewById(R.id.backend_for_next_launch_spinner);
+        mOutOfProcess = findViewById(R.id.out_of_process_checkbox);
+
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,
                 new String[] { "libcorkscrew", "libunwind", "libunwindstack" } // should match ndcrash_backend order.
                 );
-        backendForNextLaunch.setAdapter(adapter);
-        backendForNextLaunch.setSelection(getSharedPreferences(MainApplication.SHARED_PREFS_NAME, MODE_PRIVATE).
-                getInt(MainApplication.BACKEND_FOR_NEXT_LAUNCH_KEY, 0));
-        backendForNextLaunch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mBackendForNextLaunch.setAdapter(adapter);
+
+        final SharedPreferences prefs = getSharedPreferences(MainApplication.SHARED_PREFS_NAME, MODE_PRIVATE);
+        mBackendForNextLaunch.setSelection(prefs.getInt(MainApplication.BACKEND_FOR_NEXT_LAUNCH_KEY, 0));
+        mBackendForNextLaunch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                saveBackendToSettings(i);
+                saveBackendToSettings();
             }
 
             @Override public void onNothingSelected(AdapterView<?> adapterView) {
-                saveBackendToSettings(0);
+                saveBackendToSettings();
+            }
+        });
+
+        mOutOfProcess.setChecked(prefs.getBoolean(MainApplication.OUT_OF_PROCESS_KEY, false));
+        mOutOfProcess.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                saveBackendToSettings();
             }
         });
 
@@ -77,10 +90,11 @@ public class MainActivity extends Activity {
         mNativeCrashTextFieldDefaultValue = mNativeCrashTextField.getText().toString();
     }
 
-    private void saveBackendToSettings(int backend) {
+    private void saveBackendToSettings() {
         getSharedPreferences(MainApplication.SHARED_PREFS_NAME, MODE_PRIVATE)
                 .edit()
-                .putInt(MainApplication.BACKEND_FOR_NEXT_LAUNCH_KEY, backend)
+                .putInt(MainApplication.BACKEND_FOR_NEXT_LAUNCH_KEY, mBackendForNextLaunch.getSelectedItemPosition())
+                .putBoolean(MainApplication.OUT_OF_PROCESS_KEY, mOutOfProcess.isChecked())
                 .apply();
     }
 
