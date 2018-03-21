@@ -63,7 +63,7 @@ public class MainActivity extends Activity {
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this,
                 android.R.layout.simple_spinner_item,
-                new String[] { "libcorkscrew", "libunwind", "libunwindstack" } // should match ndcrash_backend order.
+                new String[] { "libcorkscrew", "libunwind", "libunwindstack", "cxxabi", "stackscan" } // should match ndcrash_backend order.
                 );
         mBackendForNextLaunch.setAdapter(adapter);
 
