@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
@@ -32,23 +32,75 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button b = (Button) findViewById(R.id.ndkcrash);
-        b.setOnClickListener(new View.OnClickListener() {
+        // Setting up tab host.
+        final TabHost tabHost = findViewById(R.id.tab_host);
+        tabHost.setup();
+        TabHost.TabSpec spec = tabHost.newTabSpec("CrashReport");
+        spec.setContent(R.id.tab_last_report);
+        spec.setIndicator(getString(R.string.last_ndk_crash_report));
+        tabHost.addTab(spec);
+        spec = tabHost.newTabSpec("CrashApplication");
+        spec.setContent(R.id.tab_crash_app);
+        spec.setIndicator(getString(R.string.crash_application));
+        tabHost.addTab(spec);
+
+        // Setting up crash buttons.
+        findViewById(R.id.crash_type_nullptr_dereference).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                crashApp();
+                Crasher.nullPointerDereference();
+            }
+        });
+        findViewById(R.id.crash_type_free_call_with_garbage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Crasher.freeGarbagePointer();
+            }
+        });
+        findViewById(R.id.crash_type_abort).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Crasher.abort();
+            }
+        });
+        findViewById(R.id.crash_type_cpp_exception).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Crasher.cppException();
+            }
+        });
+        findViewById(R.id.crash_type_stack_overflow).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Crasher.stackOverflow();
+            }
+        });
+        findViewById(R.id.crash_type_built_in_trap).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Crasher.builtInTrap();
+            }
+        });
+        findViewById(R.id.crash_type_undefined_instruction).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Crasher.undefinedInstruction();
+            }
+        });
+        findViewById(R.id.crash_type_privileged_instruction).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Crasher.privilegedInstruction();
+            }
+        });
+        findViewById(R.id.crash_type_division_by_zero_integer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Crasher.divisionByZeroInteger();
             }
         });
 
-        b = (Button) findViewById(R.id.javacrash);
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                throw new Error("I am crashed!");
-            }
-        });
-
-        b = (Button) findViewById(R.id.clearndkcrash);
-        b.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.clear_report).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mNativeCrashTextField.setText(mNativeCrashTextFieldDefaultValue);
@@ -56,7 +108,6 @@ public class MainActivity extends Activity {
                 crashFile.delete();
             }
         });
-
         mBackendForNextLaunch = findViewById(R.id.backend_for_next_launch_spinner);
         mOutOfProcess = findViewById(R.id.out_of_process_checkbox);
 
@@ -117,12 +168,5 @@ public class MainActivity extends Activity {
             } catch (IOException ignored) {
             }
         }
-    }
-
-    public native void crashApp();
-
-    // Used to load the 'native-lib' library on application startup.
-    static {
-        System.loadLibrary("ndcrashdemo");
     }
 }

@@ -1,10 +1,21 @@
 <resources>
     <string name="app_name">ndcrashdemo</string>
-    <string name="ndk_crash">NDK crash</string>
     <string name="java_crash">Java crash</string>
-    <string name="clear_report">Clear report</string>
-    <string name="last_ndk_crash_report">Last NDK crash report:</string>
+    <string name="clear">Clear</string>
+    <string name="last_ndk_crash_report">Last NDK crash report</string>
     <string name="no_crash">No Crash</string>
     <string name="backend_for_next_launch">Backend for next launch:</string>
     <string name="out_of_process">Out of process</string>
+    <string name="crash_application">Crash application</string>
+
+    <!-- Types of crash -->
+    <string name="crash_type_nullptr_dereference">Null Pointer Dereference</string>
+    <string name="crash_type_free_call_with_garbage">free() Call With Garbage</string>
+    <string name="crash_type_abort">abort() Call</string>
+    <string name="crash_type_cpp_exception">C++ Exception</string>
+    <string name="crash_type_stack_overflow">Stack Overflow</string>
+    <string name="crash_type_built_in_trap">__builtin_trap() Call</string>
+    <string name="crash_type_undefined_instruction">Undefined Instruction</string>
+    <string name="crash_type_privileged_instruction">Privileged Instruction</string>
+    <string name="crash_type_division_by_zero_integer">Division By Zero (Integer)</string>
 </resources>
