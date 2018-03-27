@@ -67,10 +67,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/backend_for_next_launch"/>
+                            android:text="@string/unwinder_for_next_launch"/>
 
                         <Spinner
-                            android:id="@+id/backend_for_next_launch_spinner"
+                            android:id="@+id/unwinder_for_next_launch_spinner"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"/>

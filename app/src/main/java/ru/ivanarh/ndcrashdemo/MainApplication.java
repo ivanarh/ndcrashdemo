@@ -13,7 +13,7 @@ import ru.ivanarh.jndcrash.NDCrashService;
 public class MainApplication extends Application {
 
     public static final String SHARED_PREFS_NAME = "jndcrash";
-    public static final String BACKEND_FOR_NEXT_LAUNCH_KEY = "backend_for_next_launch";
+    public static final String UNWINDER_FOR_NEXT_LAUNCH_KEY = "unwinder_for_next_launch";
     public static final String OUT_OF_PROCESS_KEY = "out_of_process";
     public static String mNativeCrashPath;
 
@@ -37,14 +37,14 @@ public class MainApplication extends Application {
         if (!isMainProcess()) return;
         mNativeCrashPath = getFilesDir().getAbsolutePath() + "/crash.txt";
         final SharedPreferences prefs = getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE);
-        final int backend = prefs.getInt(BACKEND_FOR_NEXT_LAUNCH_KEY, 0);
+        final int unwinder = prefs.getInt(UNWINDER_FOR_NEXT_LAUNCH_KEY, 0);
         final boolean outOfProcess = prefs.getBoolean(OUT_OF_PROCESS_KEY, false);
-        NDCrash.initialize(mNativeCrashPath, backend, outOfProcess);
+        NDCrash.initialize(mNativeCrashPath, unwinder, outOfProcess);
         if (outOfProcess) {
             //Starting the crash report catching service (in another process)
             final Intent serviceIntent = new Intent(this, NDCrashService.class);
             serviceIntent.putExtra(NDCrashService.EXTRA_REPORT_FILE, mNativeCrashPath);
-            serviceIntent.putExtra(NDCrashService.EXTRA_BACKEND, backend);
+            serviceIntent.putExtra(NDCrashService.EXTRA_UNWINDER, unwinder);
             startService(serviceIntent);
         }
     }

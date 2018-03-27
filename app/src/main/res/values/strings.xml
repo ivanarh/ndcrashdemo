@@ -4,7 +4,7 @@
     <string name="clear">Clear</string>
     <string name="last_ndk_crash_report">Last NDK crash report</string>
     <string name="no_crash">No Crash</string>
-    <string name="backend_for_next_launch">Backend for next launch:</string>
+    <string name="unwinder_for_next_launch">Unwinder for a next launch:</string>
     <string name="out_of_process">Out of process</string>
     <string name="crash_application">Crash application</string>
 
