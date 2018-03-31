@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 import ru.ivanarh.jndcrash.Error;
 import ru.ivanarh.jndcrash.NDCrash;
@@ -37,6 +38,13 @@ public class CrashService extends Service implements NDCrash.OnCrashCallback
             final String reportPath = intent.getStringExtra(EXTRA_REPORT_FILE);
             final Error initResult = NDCrash.startOutOfProcessDaemon(reportPath, unwinder, this);
             Log.i(TAG, "Out-of-process unwinding daemon is started with result: " + initResult +  ", unwinder: " + unwinder + " report path: " + reportPath);
+            if (initResult != Error.ok) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Couldn't start NDCrash out-of-process daemon with unwinder " + unwinder + ", error: " + initResult,
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
         }
         return Service.START_STICKY;
     }

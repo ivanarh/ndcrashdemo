@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Process;
 import android.util.Log;
+import android.widget.Toast;
 
 import ru.ivanarh.jndcrash.Error;
 import ru.ivanarh.jndcrash.NDCrash;
@@ -54,6 +55,13 @@ public class MainApplication extends Application {
             // Initializing signal handler.
             final Error initResult = NDCrash.initializeOutOfProcess();
             Log.i(TAG, "Out-of-process signal handler is initialized with result: " + initResult);
+            if (initResult != Error.ok) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Couldn't initialize NDCrash signal handler for out-of-process mode, error: " + initResult,
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
 
             // Starting the crash report catching service (in another process). It will start a daemon.
             final Intent serviceIntent = new Intent(this, CrashService.class);
@@ -63,6 +71,13 @@ public class MainApplication extends Application {
         } else {
             final Error initResult = NDCrash.initializeInProcess(mNativeCrashPath, unwinder);
             Log.i(TAG, "In-process signal handler is initialized with result: " + initResult + " unwinder: " + unwinder);
+            if (initResult != Error.ok) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Couldn't initialize NDCrash with unwinder " + unwinder + " in in-process mode, error: " + initResult,
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
 
             // Stopping service. We don't need it anymore.
             stopService(new Intent(this, CrashService.class));
