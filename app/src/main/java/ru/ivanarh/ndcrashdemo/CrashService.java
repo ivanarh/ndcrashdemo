@@ -36,7 +36,7 @@ public class CrashService extends Service implements NDCrash.OnCrashCallback
             mNativeStarted = true;
             final Unwinder unwinder = Unwinder.values()[intent.getIntExtra(EXTRA_UNWINDER, 0)];
             final String reportPath = intent.getStringExtra(EXTRA_REPORT_FILE);
-            final Error initResult = NDCrash.startOutOfProcessDaemon(reportPath, unwinder, this);
+            final Error initResult = NDCrash.startOutOfProcessDaemon(this, reportPath, unwinder, this);
             Log.i(TAG, "Out-of-process unwinding daemon is started with result: " + initResult +  ", unwinder: " + unwinder + " report path: " + reportPath);
             if (initResult != Error.ok) {
                 Toast.makeText(

@@ -53,7 +53,7 @@ public class MainApplication extends Application {
         final boolean outOfProcess = prefs.getBoolean(OUT_OF_PROCESS_KEY, false);
         if (outOfProcess) {
             // Initializing signal handler.
-            final Error initResult = NDCrash.initializeOutOfProcess();
+            final Error initResult = NDCrash.initializeOutOfProcess(this);
             Log.i(TAG, "Out-of-process signal handler is initialized with result: " + initResult);
             if (initResult != Error.ok) {
                 Toast.makeText(
