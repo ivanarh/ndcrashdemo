@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import ru.ivanarh.jndcrash.Error;
 import ru.ivanarh.jndcrash.NDCrash;
+import ru.ivanarh.jndcrash.NDCrashUtils;
 import ru.ivanarh.jndcrash.Unwinder;
 
 public class MainApplication extends Application {
@@ -24,29 +25,11 @@ public class MainApplication extends Application {
     public static final String OUT_OF_PROCESS_KEY = "out_of_process";
     public static String mNativeCrashPath;
 
-    /**
-     * Retrieves a flag whether a code is being run in main process.
-     *
-     * @return Flag value.
-     */
-    private boolean isMainProcess() {
-        final int pid = Process.myPid();
-        final ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        if (manager != null) {
-            for (final ActivityManager.RunningAppProcessInfo info : manager.getRunningAppProcesses()) {
-                if (info.pid == pid) {
-                    return getPackageName().equals(info.processName);
-                }
-            }
-        }
-        return true;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
         // If it's a process for NDCrashService we don't need to initialize NDCrash signal handler.
-        if (!isMainProcess()) return;
+        if (!NDCrashUtils.isMainProcess(this)) return;
         mNativeCrashPath = getFilesDir().getAbsolutePath() + "/crash.txt";
         final SharedPreferences prefs = getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE);
         final Unwinder unwinder = Unwinder.values()[prefs.getInt(UNWINDER_FOR_NEXT_LAUNCH_KEY, 0)];
