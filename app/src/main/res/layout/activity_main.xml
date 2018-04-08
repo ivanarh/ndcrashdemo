@@ -58,7 +58,6 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -77,11 +76,33 @@
 
                     </LinearLayout>
 
-                    <CheckBox
-                        android:id="@+id/out_of_process_checkbox"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/out_of_process"/>
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <CheckBox
+                            android:id="@+id/out_of_process_checkbox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/out_of_process"/>
+
+                        <Button
+                            android:id="@+id/start_out_of_process_service"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/start_service"/>
+
+                        <Button
+                            android:id="@+id/stop_out_of_process_service"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/stop_service"/>
+
+                    </LinearLayout>
 
                     <ScrollView
                         android:layout_width="match_parent"

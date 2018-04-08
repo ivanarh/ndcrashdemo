@@ -1,6 +1,7 @@
 package ru.ivanarh.ndcrashdemo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -11,12 +12,15 @@ import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import ru.ivanarh.jndcrash.Unwinder;
 
 
 public class MainActivity extends Activity {
@@ -104,8 +108,14 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 mNativeCrashTextField.setText(mNativeCrashTextFieldDefaultValue);
-                final File crashFile = new File(MainApplication.mNativeCrashPath);
-                crashFile.delete();
+                final File crashFile = new File(MainApplication.getReportPath());
+                if (!crashFile.delete()) {
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Couldn't delete a file: " + crashFile.getAbsolutePath(),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
             }
         });
         mUnwinderForNextLaunch = findViewById(R.id.unwinder_for_next_launch_spinner);
@@ -139,6 +149,20 @@ public class MainActivity extends Activity {
 
         mNativeCrashTextField = (TextView) findViewById(R.id.lastCrashContents);
         mNativeCrashTextFieldDefaultValue = mNativeCrashTextField.getText().toString();
+
+        // Start service and stop service buttons handlers.
+        findViewById(R.id.start_out_of_process_service).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                final SharedPreferences prefs = getSharedPreferences(MainApplication.SHARED_PREFS_NAME, MODE_PRIVATE);
+                final Unwinder unwinder = Unwinder.values()[prefs.getInt(MainApplication.UNWINDER_FOR_NEXT_LAUNCH_KEY, 0)];
+                MainApplication.startCrashService(getApplicationContext(), unwinder);
+            }
+        });
+        findViewById(R.id.stop_out_of_process_service).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                getApplicationContext().stopService(new Intent(getApplicationContext(), CrashService.class));
+            }
+        });
     }
 
     private void saveUnwinderToSettings() {
@@ -152,7 +176,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        final File crashFile = new File(MainApplication.mNativeCrashPath);
+        final File crashFile = new File(MainApplication.getReportPath());
         if (crashFile.exists()) {
             try {
                 FileInputStream inputStream = new FileInputStream(crashFile);
