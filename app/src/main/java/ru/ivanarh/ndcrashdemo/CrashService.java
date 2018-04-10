@@ -3,9 +3,9 @@ package ru.ivanarh.ndcrashdemo;
 import android.util.Log;
 import android.widget.Toast;
 
-import ru.ivanarh.jndcrash.Error;
+import ru.ivanarh.jndcrash.NDCrashError;
 import ru.ivanarh.jndcrash.NDCrashService;
-import ru.ivanarh.jndcrash.Unwinder;
+import ru.ivanarh.jndcrash.NDCrashUnwinder;
 
 /**
  * Service for out-of-process crash handling daemon. Should be run from a separate process.
@@ -23,9 +23,9 @@ public class CrashService extends NDCrashService {
     }
 
     @Override
-    protected void onDaemonStart(Unwinder unwinder, String reportPath, Error result) {
+    protected void onDaemonStart(NDCrashUnwinder unwinder, String reportPath, NDCrashError result) {
         final String message;
-        if (result == Error.ok) {
+        if (result == NDCrashError.ok) {
             message = "NDCrash out-of-process daemon is successfully started with unwinder: " + unwinder;
         } else {
             message = "Couldn't start NDCrash out-of-process daemon with unwinder: " + unwinder + ", error: " + result;

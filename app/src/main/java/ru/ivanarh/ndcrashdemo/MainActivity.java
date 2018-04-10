@@ -22,9 +22,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import ru.ivanarh.jndcrash.Error;
+import ru.ivanarh.jndcrash.NDCrashError;
 import ru.ivanarh.jndcrash.NDCrash;
-import ru.ivanarh.jndcrash.Unwinder;
+import ru.ivanarh.jndcrash.NDCrashUnwinder;
 
 
 public class MainActivity extends Activity {
@@ -164,8 +164,8 @@ public class MainActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         final SharedPreferences prefs = getSharedPreferences(MainApplication.SHARED_PREFS_NAME, MODE_PRIVATE);
-        final Unwinder unwinder = Unwinder.values()[prefs.getInt(MainApplication.UNWINDER_FOR_NEXT_LAUNCH_KEY, 0)];
-        Error error;
+        final NDCrashUnwinder unwinder = NDCrashUnwinder.values()[prefs.getInt(MainApplication.UNWINDER_FOR_NEXT_LAUNCH_KEY, 0)];
+        NDCrashError error;
         String message = null;
         switch (item.getItemId()) {
             case R.id.menu_in_initialize_signal_handler:
