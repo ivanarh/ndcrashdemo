@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/in_process">
+        <menu>
+            <item
+                android:id="@+id/menu_in_initialize_signal_handler"
+                android:title="@string/initialize_signal_handler"/>
+            <item
+                android:id="@+id/menu_in_deinitialize_signal_handler"
+                android:title="@string/deinitialize_signal_handler"/>
+        </menu>
+    </item>
+    <item android:title="@string/out_of_process">
+        <menu>
+            <item
+                android:id="@+id/menu_out_initialize_signal_handler"
+                android:title="@string/initialize_signal_handler"/>
+            <item
+                android:id="@+id/menu_out_deinitialize_signal_handler"
+                android:title="@string/deinitialize_signal_handler"/>
+            <item
+                android:id="@+id/menu_out_start_service"
+                android:title="@string/start_service"/>
+            <item
+                android:id="@+id/menu_out_stop_service"
+                android:title="@string/stop_service"/>
+        </menu>
+    </item>
+</menu>

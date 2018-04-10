@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import ru.ivanarh.jndcrash.Error;
+import ru.ivanarh.jndcrash.NDCrash;
 import ru.ivanarh.jndcrash.Unwinder;
 
 
@@ -149,20 +153,48 @@ public class MainActivity extends Activity {
 
         mNativeCrashTextField = (TextView) findViewById(R.id.lastCrashContents);
         mNativeCrashTextFieldDefaultValue = mNativeCrashTextField.getText().toString();
+    }
 
-        // Start service and stop service buttons handlers.
-        findViewById(R.id.start_out_of_process_service).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
-                final SharedPreferences prefs = getSharedPreferences(MainApplication.SHARED_PREFS_NAME, MODE_PRIVATE);
-                final Unwinder unwinder = Unwinder.values()[prefs.getInt(MainApplication.UNWINDER_FOR_NEXT_LAUNCH_KEY, 0)];
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final SharedPreferences prefs = getSharedPreferences(MainApplication.SHARED_PREFS_NAME, MODE_PRIVATE);
+        final Unwinder unwinder = Unwinder.values()[prefs.getInt(MainApplication.UNWINDER_FOR_NEXT_LAUNCH_KEY, 0)];
+        Error error;
+        String message = null;
+        switch (item.getItemId()) {
+            case R.id.menu_in_initialize_signal_handler:
+                error = NDCrash.initializeInProcess(
+                        MainApplication.getReportPath(),
+                        unwinder);
+                message = "In-process initialization result: " + error;
+                break;
+            case R.id.menu_in_deinitialize_signal_handler:
+                message = "Out-of-process de-initialization result: " + NDCrash.deInitializeInProcess();
+                break;
+            case R.id.menu_out_initialize_signal_handler:
+                error = NDCrash.initializeOutOfProcess(getApplicationContext());
+                message = "Out-of-process initialization result: " + error;
+                break;
+            case R.id.menu_out_deinitialize_signal_handler:
+                message = "Out-of-process de-initialization result: " + NDCrash.deInitializeOutOfProcess();
+                break;
+            case R.id.menu_out_start_service:
                 MainApplication.startCrashService(getApplicationContext(), unwinder);
-            }
-        });
-        findViewById(R.id.stop_out_of_process_service).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) {
+                break;
+            case R.id.menu_out_stop_service:
                 getApplicationContext().stopService(new Intent(getApplicationContext(), CrashService.class));
-            }
-        });
+                break;
+        }
+        if (message != null) {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
+        return true;
     }
 
     private void saveUnwinderToSettings() {

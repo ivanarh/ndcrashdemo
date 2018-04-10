@@ -24,10 +24,15 @@ public class CrashService extends NDCrashService {
 
     @Override
     protected void onDaemonStart(Unwinder unwinder, String reportPath, Error result) {
-        if (result == Error.ok) return;
+        final String message;
+        if (result == Error.ok) {
+            message = "NDCrash out-of-process daemon is successfully started with unwinder: " + unwinder;
+        } else {
+            message = "Couldn't start NDCrash out-of-process daemon with unwinder: " + unwinder + ", error: " + result;
+        }
         Toast.makeText(
                 this,
-                "Couldn't start NDCrash out-of-process daemon with unwinder: " + unwinder + ", error: " + result,
+                message,
                 Toast.LENGTH_SHORT
         ).show();
     }
