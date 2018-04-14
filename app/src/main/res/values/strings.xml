@@ -2,12 +2,17 @@
     <string name="app_name">ndcrashdemo</string>
     <string name="java_crash">Java crash</string>
     <string name="clear">Clear</string>
+    <string name="send">Send</string>
     <string name="last_ndk_crash_report">Last NDK crash report</string>
     <string name="no_crash">No Crash</string>
     <string name="unwinder_for_next_launch">Unwinder for a next launch:</string>
     <string name="in_process">In-process</string>
     <string name="out_of_process">Out-of-process</string>
     <string name="crash_application">Crash application</string>
+    <string name="start_service">Start service</string>
+    <string name="stop_service">Stop service</string>
+    <string name="initialize_signal_handler">Initialize Signal Handler</string>
+    <string name="deinitialize_signal_handler">Deinitialize Signal Handler</string>
 
     <!-- Types of crash -->
     <string name="crash_type_nullptr_dereference">Null Pointer Dereference</string>
@@ -19,8 +24,4 @@
     <string name="crash_type_undefined_instruction">Undefined Instruction</string>
     <string name="crash_type_privileged_instruction">Privileged Instruction</string>
     <string name="crash_type_division_by_zero_integer">Division By Zero (Integer)</string>
-    <string name="start_service">Start service</string>
-    <string name="stop_service">Stop service</string>
-    <string name="initialize_signal_handler">Initialize Signal Handler</string>
-    <string name="deinitialize_signal_handler">Deinitialize Signal Handler</string>
 </resources>

@@ -3,6 +3,9 @@ package ru.ivanarh.ndcrashdemo;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,12 +18,14 @@ import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v4.content.FileProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import ru.ivanarh.jndcrash.NDCrashError;
 import ru.ivanarh.jndcrash.NDCrash;
@@ -122,6 +127,23 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
+        findViewById(R.id.send_report).setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                final File crashFile = new File(MainApplication.getReportPath());
+                if (!crashFile.exists()) return;
+                final Uri crashFileUri = FileProvider.getUriForFile(MainActivity.this, "ru.ivanarh.ndcrashdemo.files", crashFile);
+                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                emailIntent.setType("message/rfc822");
+                emailIntent.putExtra(Intent.EXTRA_STREAM, crashFileUri);
+                final List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(emailIntent, PackageManager.MATCH_DEFAULT_ONLY);
+                for (ResolveInfo resolveInfo : resInfoList) {
+                    grantUriPermission(resolveInfo.activityInfo.packageName, crashFileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
+                startActivity(Intent.createChooser(emailIntent, null));
+            }
+        });
+
         mUnwinderForNextLaunch = findViewById(R.id.unwinder_for_next_launch_spinner);
         mOutOfProcess = findViewById(R.id.out_of_process_checkbox);
 

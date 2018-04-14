@@ -19,6 +19,16 @@
         </activity>
 
         <service android:name=".CrashService" android:process=":reportprocess"/>
+        
+        <provider
+            android:authorities="ru.ivanarh.ndcrashdemo.files"
+            android:name="android.support.v4.content.FileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/root_path"/>
+        </provider>
     </application>
 
 </manifest>
