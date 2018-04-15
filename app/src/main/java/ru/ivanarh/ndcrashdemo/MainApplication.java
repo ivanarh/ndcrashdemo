@@ -52,8 +52,12 @@ public class MainApplication extends Application {
         final NDCrashUnwinder unwinder = NDCrashUnwinder.values()[prefs.getInt(UNWINDER_FOR_NEXT_LAUNCH_KEY, 0)];
         final boolean outOfProcess = prefs.getBoolean(OUT_OF_PROCESS_KEY, false);
         if (outOfProcess) {
-            // Initializing signal handler.
-            final NDCrashError initResult = NDCrash.initializeOutOfProcess(this);
+            // Initializing signal handler. It will start a service on success.
+            final NDCrashError initResult = NDCrash.initializeOutOfProcess(
+                    this,
+                    mReportPath,
+                    unwinder,
+                    CrashService.class);
             Log.i(TAG, "Out-of-process signal handler is initialized with result: " + initResult);
             if (initResult != NDCrashError.ok) {
                 Toast.makeText(
@@ -62,9 +66,6 @@ public class MainApplication extends Application {
                         Toast.LENGTH_SHORT
                 ).show();
             }
-
-            // Starting the crash report catching service (in another process). It will start a daemon.
-            startCrashService(this, unwinder);
         } else {
             final NDCrashError initResult = NDCrash.initializeInProcess(mReportPath, unwinder);
             Log.i(TAG, "In-process signal handler is initialized with result: " + initResult + " unwinder: " + unwinder);
@@ -75,16 +76,6 @@ public class MainApplication extends Application {
                         Toast.LENGTH_SHORT
                 ).show();
             }
-
-            // Stopping service. We don't need it anymore.
-//            stopService(new Intent(this, CrashService.class));
         }
-    }
-
-    public static void startCrashService(Context context, NDCrashUnwinder unwinder) {
-        final Intent serviceIntent = new Intent(context, CrashService.class);
-        serviceIntent.putExtra(CrashService.EXTRA_REPORT_FILE, mReportPath);
-        serviceIntent.putExtra(CrashService.EXTRA_UNWINDER, unwinder.ordinal());
-        context.startService(serviceIntent);
     }
 }

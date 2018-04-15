@@ -200,14 +200,21 @@ public class MainActivity extends Activity {
                 message = "Out-of-process de-initialization result: " + NDCrash.deInitializeInProcess();
                 break;
             case R.id.menu_out_initialize_signal_handler:
-                error = NDCrash.initializeOutOfProcess(getApplicationContext());
+                error = NDCrash.initializeOutOfProcess(
+                        getApplicationContext(),
+                        MainApplication.getReportPath(),
+                        unwinder,
+                        CrashService.class);
                 message = "Out-of-process initialization result: " + error;
                 break;
             case R.id.menu_out_deinitialize_signal_handler:
-                message = "Out-of-process de-initialization result: " + NDCrash.deInitializeOutOfProcess();
+                message = "Out-of-process de-initialization result: " + NDCrash.deInitializeOutOfProcess(this);
                 break;
             case R.id.menu_out_start_service:
-                MainApplication.startCrashService(getApplicationContext(), unwinder);
+                final Intent serviceIntent = new Intent(this, CrashService.class);
+                serviceIntent.putExtra(CrashService.EXTRA_REPORT_FILE, MainApplication.getReportPath());
+                serviceIntent.putExtra(CrashService.EXTRA_UNWINDER, unwinder.ordinal());
+                startService(serviceIntent);
                 break;
             case R.id.menu_out_stop_service:
                 getApplicationContext().stopService(new Intent(getApplicationContext(), CrashService.class));
