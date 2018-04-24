@@ -61,55 +61,55 @@ public class MainActivity extends Activity {
         findViewById(R.id.crash_type_nullptr_dereference).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Crasher.nullPointerDereference();
+                Crasher.doCrash(Crasher.Type.nullPointerDereference);
             }
         });
         findViewById(R.id.crash_type_free_call_with_garbage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Crasher.freeGarbagePointer();
+                Crasher.doCrash(Crasher.Type.freeGarbagePointer);
             }
         });
         findViewById(R.id.crash_type_abort).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Crasher.abort();
+                Crasher.doCrash(Crasher.Type.abortCall);
             }
         });
         findViewById(R.id.crash_type_cpp_exception).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Crasher.cppException();
+                Crasher.doCrash(Crasher.Type.cppException);
             }
         });
         findViewById(R.id.crash_type_stack_overflow).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Crasher.stackOverflow();
+                Crasher.doCrash(Crasher.Type.stackOverflow);
             }
         });
         findViewById(R.id.crash_type_built_in_trap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Crasher.builtInTrap();
+                Crasher.doCrash(Crasher.Type.builtInTrap);
             }
         });
         findViewById(R.id.crash_type_undefined_instruction).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Crasher.undefinedInstruction();
+                Crasher.doCrash(Crasher.Type.undefinedInstruction);
             }
         });
         findViewById(R.id.crash_type_privileged_instruction).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Crasher.privilegedInstruction();
+                Crasher.doCrash(Crasher.Type.privilegedInstruction);
             }
         });
         findViewById(R.id.crash_type_division_by_zero_integer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Crasher.divisionByZeroInteger();
+                Crasher.doCrash(Crasher.Type.divisionByZeroInteger);
             }
         });
 

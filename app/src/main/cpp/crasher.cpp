@@ -2,85 +2,174 @@
 #include <stdexcept>
 #include <stdlib.h>
 
+/// Represents a type of crash, an error type. Should match enum in Crasher.java.
+enum CrashType {
+    nullPointerDereference,
+    freeGarbagePointer,
+    divisionByZeroInteger,
+    abortCall,
+    cppException,
+    stackOverflow,
+    builtInTrap,
+    undefinedInstruction,
+    privilegedInstruction,
+};
+
 extern "C" {
 
-JNIEXPORT void JNICALL
-Java_ru_ivanarh_ndcrashdemo_Crasher_nullPointerDereference(JNIEnv *env, jclass type) {
+void do_nullPointerDereference() {
     volatile int *ptr = NULL;
     *ptr = 1;
 }
 
-JNIEXPORT void JNICALL
-Java_ru_ivanarh_ndcrashdemo_Crasher_freeGarbagePointer(JNIEnv *env, jclass type) {
-    free((void *)0x1234);
+void do_freeGarbagePointer() {
+    free((void *) 0x1234);
 }
 
-JNIEXPORT void JNICALL
-Java_ru_ivanarh_ndcrashdemo_Crasher_abort(JNIEnv *env, jclass type) {
-    abort();
-}
-
-JNIEXPORT void JNICALL
-Java_ru_ivanarh_ndcrashdemo_Crasher_cppException(JNIEnv *env, jclass type) {
-    throw std::runtime_error("ndcrashdemo error");
-}
-
-JNIEXPORT void JNICALL
-Java_ru_ivanarh_ndcrashdemo_Crasher_divisionByZeroInteger(JNIEnv *env, jclass type) {
+void do_divisionByZeroInteger() {
     int d = 0;
     int j = 10 / d;
 }
 
+void do_abortCall() {
+    abort();
+}
+
+/// Functions for stack overflow.
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "InfiniteRecursion"
-JNIEXPORT void JNICALL
-Java_ru_ivanarh_ndcrashdemo_Crasher_stackOverflow(JNIEnv *env, jclass type) {
-    Java_ru_ivanarh_ndcrashdemo_Crasher_stackOverflow(env, type);
+
+void doStackOverflow2();
+
+void do_stackOverflow() {
+    doStackOverflow2();
 }
+
+void doStackOverflow2() {
+    do_stackOverflow();
+}
+
 #pragma clang diagnostic pop
 
-JNIEXPORT void JNICALL
-Java_ru_ivanarh_ndcrashdemo_Crasher_builtInTrap(JNIEnv *env, jclass type) {
+void do_builtInTrap() {
     __builtin_trap();
 }
 
-JNIEXPORT void JNICALL
-Java_ru_ivanarh_ndcrashdemo_Crasher_undefinedInstruction(JNIEnv *env, jclass type) {
+void do_undefinedInstruction() {
 #if __i386__
     asm volatile ( "ud2" : : : );
 #elif __x86_64__
     asm volatile ( "ud2" : : : );
-#elif __arm__ && __ARM_ARCH == 7 && __thumb__
+#elif __arm__ && __thumb__
     asm volatile ( ".word 0xde00" : : : );
-#elif __arm__ && __ARM_ARCH == 7
-    asm volatile ( ".long 0xf7f8a000" : : : );
-#elif __arm__ && __ARM_ARCH == 6 && __thumb__
-    asm volatile ( ".word 0xde00" : : : );
-#elif __arm__ && __ARM_ARCH == 6
+#elif __arm__
     asm volatile ( ".long 0xf7f8a000" : : : );
 #elif __arm64__
     asm volatile ( ".long 0xf7f8a000" : : : );
 #endif
-
 }
 
-JNIEXPORT void JNICALL
-Java_ru_ivanarh_ndcrashdemo_Crasher_privilegedInstruction(JNIEnv *env, jclass type) {
+void do_privilegedInstruction() {
 #if __i386__
     asm volatile ( "hlt" : : : );
 #elif __x86_64__
     asm volatile ( "hlt" : : : );
-#elif __arm__ && __ARM_ARCH == 7 && __thumb__
+#elif __arm__ && __thumb__
     asm volatile ( ".long 0xf7f08000" : : : );
-#elif __arm__ && __ARM_ARCH == 7
+#elif __arm__
     asm volatile ( ".long 0xe1400070" : : : );
-#elif __arm__ && __ARM_ARCH == 6 && __thumb__
-    asm volatile ( ".long 0xf5ff8f00" : : : );
-#elif __arm__ && __ARM_ARCH == 6
-    asm volatile ( ".long 0xe14ff000" : : : );
 #elif __arm64__
-  asm volatile ( "tlbi alle1" : : : );
+    asm volatile ( "tlbi alle1" : : : );
 #endif
 }
 
+/// Performs a crash according to passed crash type.
+void performCrash(CrashType type) {
+    switch (type) {
+        case nullPointerDereference:
+            do_nullPointerDereference();
+            break;
+        case freeGarbagePointer:
+            do_freeGarbagePointer();
+            break;
+        case divisionByZeroInteger:
+            do_divisionByZeroInteger();
+            break;
+        case abortCall:
+            do_abortCall();
+            break;
+        case cppException:
+            throw std::runtime_error("ndcrashdemo error");
+            break;
+        case stackOverflow:
+            do_stackOverflow();
+            break;
+        case builtInTrap:
+            do_builtInTrap();
+            break;
+        case undefinedInstruction:
+            do_undefinedInstruction();
+            break;
+        case privilegedInstruction:
+            do_privilegedInstruction();
+            break;
+    }
+}
+} // extern "C"
+
+void simpleCppFunction(CrashType crashType) {
+    performCrash(crashType);
+}
+
+class TestClass {
+public:
+    TestClass() {
+    }
+
+    TestClass(CrashType type) {
+        performCrash(type);
+    }
+
+    void dynamicMethod(CrashType type) {
+        performCrash(type);
+    }
+
+    static void staticMethod(CrashType type) {
+        performCrash(type);
+    }
+};
+
+extern "C" {
+
+void simpleCFunction(CrashType type) {
+    performCrash(type);
+}
+
+JNIEXPORT void JNICALL
+Java_ru_ivanarh_ndcrashdemo_Crasher_nativeDoCrash(JNIEnv *env, jclass type, jint crashTypeOrdinal) {
+    const CrashType crashType = (CrashType) crashTypeOrdinal;
+    srand((unsigned int)time(NULL));
+    const int r = rand() % 5;
+    // Calling random intermediate function.
+    switch (r) {
+        case 0:
+            simpleCppFunction(crashType);
+            break;
+        case 1: {
+            TestClass c(crashType);
+        }
+            break;
+        case 2:
+            TestClass().dynamicMethod(crashType);
+            break;
+        case 3:
+            TestClass::staticMethod(crashType);
+            break;
+        case 4:
+            simpleCFunction(crashType);
+            break;
+        default:
+            performCrash(crashType);
+    }
+}
 }// extern "C"

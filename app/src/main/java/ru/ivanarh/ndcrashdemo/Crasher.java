@@ -1,20 +1,42 @@
 package ru.ivanarh.ndcrashdemo;
 
+import android.support.annotation.NonNull;
+
 /**
  * Class contains methods to crash an application by a different way.
  */
 public class Crasher {
 
-    // Functions that crash application. A way to crash should be clear from function name.
-    public static native void nullPointerDereference();
-    public static native void freeGarbagePointer();
-    public static native void divisionByZeroInteger();
-    public static native void abort();
-    public static native void cppException();
-    public static native void stackOverflow();
-    public static native void builtInTrap();
-    public static native void undefinedInstruction();
-    public static native void privilegedInstruction();
+    /**
+     * Functions that crash application.
+     *
+     * @param type A way how to crash an application.
+     */
+    public static void doCrash(@NonNull Type type) {
+        nativeDoCrash(type.ordinal());
+    }
+
+    /**
+     * Functions that crash application in a native code.
+     *
+     * @param crashTypeOrdinal A way how to crash an application, ordinal value.
+     */
+    private static native void nativeDoCrash(int crashTypeOrdinal);
+
+    /**
+     * Represents a type of crash, an error type. Should match enum in crasher.cpp.
+     */
+    public enum Type {
+        nullPointerDereference,
+        freeGarbagePointer,
+        divisionByZeroInteger,
+        abortCall,
+        cppException,
+        stackOverflow,
+        builtInTrap,
+        undefinedInstruction,
+        privilegedInstruction,
+    }
 
     // Used to load the 'native-lib' library on application startup.
     static {
