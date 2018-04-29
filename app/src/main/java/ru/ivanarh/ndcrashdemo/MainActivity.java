@@ -211,13 +211,17 @@ public class MainActivity extends Activity {
                 message = "Out-of-process de-initialization result: " + NDCrash.deInitializeOutOfProcess(this);
                 break;
             case R.id.menu_out_start_service:
-                final Intent serviceIntent = new Intent(this, CrashService.class);
-                serviceIntent.putExtra(CrashService.EXTRA_REPORT_FILE, MainApplication.getReportPath());
-                serviceIntent.putExtra(CrashService.EXTRA_UNWINDER, unwinder.ordinal());
-                startService(serviceIntent);
-                break;
             case R.id.menu_out_stop_service:
-                getApplicationContext().stopService(new Intent(getApplicationContext(), CrashService.class));
+            case R.id.menu_out_restart_service:
+                if (item.getItemId() != R.id.menu_out_start_service) {
+                    getApplicationContext().stopService(new Intent(getApplicationContext(), CrashService.class));
+                }
+                if (item.getItemId() != R.id.menu_out_stop_service) {
+                    final Intent serviceIntent = new Intent(getApplicationContext(), CrashService.class);
+                    serviceIntent.putExtra(CrashService.EXTRA_REPORT_FILE, MainApplication.getReportPath());
+                    serviceIntent.putExtra(CrashService.EXTRA_UNWINDER, unwinder.ordinal());
+                    getApplicationContext().startService(serviceIntent);
+                }
                 break;
         }
         if (message != null) {

@@ -24,6 +24,9 @@
             <item
                 android:id="@+id/menu_out_stop_service"
                 android:title="@string/stop_service"/>
+            <item
+                android:id="@+id/menu_out_restart_service"
+                android:title="@string/restart_service"/>
         </menu>
     </item>
 </menu>
