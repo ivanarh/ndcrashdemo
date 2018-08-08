@@ -10,7 +10,7 @@ android {
         versionName "1.0"
         externalNativeBuild {
             cmake {
-                arguments "-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
+                arguments "-DANDROID_STL=c++_static", "-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
             }
         }
         ndk {
