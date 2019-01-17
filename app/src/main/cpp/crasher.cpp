@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <stdexcept>
 #include <stdlib.h>
+#include <assert.h>
 
 /// Represents a type of crash, an error type. Should match enum in Crasher.java.
 enum CrashType {
@@ -13,6 +14,7 @@ enum CrashType {
     builtInTrap,
     undefinedInstruction,
     privilegedInstruction,
+    assertionFailed,
 };
 
 extern "C" {
@@ -83,6 +85,10 @@ void do_privilegedInstruction() {
 #endif
 }
 
+void do_assertionFailed() {
+    __assert(__FILE__, __LINE__, "This is a test crash with __assert function.");
+}
+
 /// Performs a crash according to passed crash type.
 void performCrash(CrashType type) {
     switch (type) {
@@ -112,6 +118,9 @@ void performCrash(CrashType type) {
             break;
         case privilegedInstruction:
             do_privilegedInstruction();
+            break;
+        case assertionFailed:
+            do_assertionFailed();
             break;
     }
 }

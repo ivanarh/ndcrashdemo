@@ -24,5 +24,6 @@
     <string name="crash_type_undefined_instruction">Undefined Instruction</string>
     <string name="crash_type_privileged_instruction">Privileged Instruction</string>
     <string name="crash_type_division_by_zero_integer">Division By Zero (Integer)</string>
+    <string name="crash_type_assertion_failed">Assertion failed</string>
     <string name="restart_service">Restart service</string>
 </resources>

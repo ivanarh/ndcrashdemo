@@ -164,6 +164,12 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="@string/crash_type_division_by_zero_integer"/>
+
+                            <Button
+                                android:id="@+id/crash_type_assertion_failed"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/crash_type_assertion_failed"/>
                         </LinearLayout>
                     </ScrollView>
                 </LinearLayout>

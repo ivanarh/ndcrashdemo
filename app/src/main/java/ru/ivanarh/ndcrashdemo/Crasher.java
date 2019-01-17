@@ -36,6 +36,7 @@ public class Crasher {
         builtInTrap,
         undefinedInstruction,
         privilegedInstruction,
+        assertionFailed,
     }
 
     // Used to load the 'native-lib' library on application startup.

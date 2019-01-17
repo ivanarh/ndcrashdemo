@@ -112,6 +112,12 @@ public class MainActivity extends Activity {
                 Crasher.doCrash(Crasher.Type.divisionByZeroInteger);
             }
         });
+        findViewById(R.id.crash_type_assertion_failed).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Crasher.doCrash(Crasher.Type.assertionFailed);
+            }
+        });
 
         findViewById(R.id.clear_report).setOnClickListener(new View.OnClickListener() {
             @Override
